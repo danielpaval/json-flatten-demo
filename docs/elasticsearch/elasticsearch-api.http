@@ -1,0 +1,5 @@
+PUT http://localhost:9200/events
+Content-Type: application/json
+Authorization: Basic ZWxhc3RpYzpjaGFuZ2VtZQ==
+
+< index-mapping.json

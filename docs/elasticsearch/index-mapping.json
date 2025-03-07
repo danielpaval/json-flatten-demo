@@ -1,0 +1,15 @@
+{
+  "mappings": {
+    "dynamic": "false",
+    "properties": {
+      "_class": {
+        "type": "keyword",
+        "index": false,
+        "doc_values": false
+      },
+      "data": {
+        "type": "object"
+      }
+    }
+  }
+}

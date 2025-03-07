@@ -1,0 +1,41 @@
+POST http://localhost:8080/api/events
+Content-Type: application/json
+
+{
+  "data": {
+    "name": "John Doe",
+    "age": 30,
+    "address": {
+      "street": "123 Main St",
+      "city": "Anytown",
+      "country": {
+        "name": "CountryName",
+        "code": "CN"
+      }
+    },
+    "contact": {
+      "email": "john.doe@example.com",
+      "phone": "123-456-7890"
+    },
+    "createdAt": "2023-10-01T12:00:00Z"
+  }
+}
+
+> {%
+    // client.log("Testingggggggggggggggggg");
+    // // Extract token from response
+    // const jsonResponse = JSON.parse(response.body);
+    // client.log(jsonResponse);
+    // const uuid = jsonResponse.id;
+    // client.log(uuid);
+    // // Save to environment variable
+    // client.global.set("uuid", uuid);
+    // // Log to console (optional)
+    // client.log("UUID saved: " + uuid);
+%}
+
+###
+
+GET http://localhost:8080/api/events/c8300e06-91c0-4bfa-8272-7031ffd351df
+
+
