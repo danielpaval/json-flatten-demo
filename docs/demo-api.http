@@ -22,17 +22,13 @@ Content-Type: application/json
 }
 
 > {%
-    // client.log("Testingggggggggggggggggg");
-    // // Extract token from response
-    // const jsonResponse = JSON.parse(response.body);
-    // client.log(jsonResponse);
-    // const uuid = jsonResponse.id;
-    // client.log(uuid);
-    // // Save to environment variable
-    // client.global.set("uuid", uuid);
-    // // Log to console (optional)
-    // client.log("UUID saved: " + uuid);
+    client.global.set("EVENT_ID", null);
+    client.global.set("EVENT_ID", response.body.id);
 %}
+
+###
+
+GET http://localhost:8080/api/events/{{EVENT_ID}}
 
 ###
 
