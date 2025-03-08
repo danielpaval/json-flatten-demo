@@ -1,3 +1,6 @@
 spring:
   application:
     name: json-flatten-demo
+  threads:
+    virtual:
+      enabled: true

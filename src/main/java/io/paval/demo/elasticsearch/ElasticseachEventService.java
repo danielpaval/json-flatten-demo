@@ -19,6 +19,7 @@ public class ElasticseachEventService implements EventService {
 
     @Override
     public EventDto save(EventDto eventDto) {
+        eventDto.setId(UUID.randomUUID());
         ElasticsearchEvent event = eventMapper.eventDtoToEvent(eventDto);
         ElasticsearchEvent savedEvent = eventRepository.save(event);
         return eventMapper.eventToEventDto(savedEvent);

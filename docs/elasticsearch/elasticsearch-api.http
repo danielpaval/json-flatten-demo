@@ -1,5 +1,5 @@
-PUT http://localhost:9200/events
+PUT {{ELASTICSEARCH_URI}}/events
 Content-Type: application/json
-Authorization: Basic ZWxhc3RpYzpjaGFuZ2VtZQ==
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
 
 < index-mapping.json

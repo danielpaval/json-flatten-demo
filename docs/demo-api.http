@@ -1,4 +1,4 @@
-POST http://localhost:8080/api/events
+POST {{DEMO_URL}}/api/events
 Content-Type: application/json
 
 {
@@ -36,6 +36,6 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/api/events/c8300e06-91c0-4bfa-8272-7031ffd351df
+GET http://localhost:8080/api/events/5108DBAF-B2F1-4EB3-8C0F-2EDF48C95B1C
 
 

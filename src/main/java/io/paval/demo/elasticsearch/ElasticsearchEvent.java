@@ -1,7 +1,6 @@
 package io.paval.demo.elasticsearch;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -14,7 +13,6 @@ import java.util.UUID;
 @Document(indexName = "events")
 @Getter
 @Setter
-@NoArgsConstructor
 public class ElasticsearchEvent {
 
     @Id
