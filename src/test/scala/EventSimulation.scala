@@ -40,7 +40,7 @@ class EventSimulation extends Simulation {
 
   val getRequest: ChainBuilder = exec(
     http("Get Event")
-      .get("/api/events/${eventId}")
+      .get("/api/events/#{eventId}")
       .check(status.is(200))
   )
 
@@ -49,7 +49,8 @@ class EventSimulation extends Simulation {
     .pause(1)
     .exec(getRequest)
 
-  setUp(
-    scenarioBuilder.inject(atOnceUsers(10))
-  ).protocols(httpProtocolBuilder)
+  setUp(scenarioBuilder.inject(atOnceUsers(10)))
+    .protocols(httpProtocolBuilder)
+    .assertions(global.successfulRequests.percent.is(100))
+  
 }
