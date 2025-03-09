@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/events")
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class EventController {
     })
     @PostMapping
     public ResponseEntity<EventDto> save(@RequestBody EventDto eventDto) {
-
+        EventUtils.flatten(eventDto.getData()).forEach(System.out::println);
         EventDto savedEvent = eventService.save(eventDto);
         return new ResponseEntity<>(savedEvent, HttpStatus.CREATED);
     }

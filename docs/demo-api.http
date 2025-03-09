@@ -5,14 +5,25 @@ Content-Type: application/json
   "data": {
     "name": "John Doe",
     "age": 30,
-    "address": {
-      "street": "123 Main St",
-      "city": "Anytown",
-      "country": {
-        "name": "CountryName",
-        "code": "CN"
+    "addresses": [
+      {
+        "default": true,
+        "street": "123 Main St",
+        "city": "Anytown",
+        "country": {
+          "name": "CountryName",
+          "code": "CN"
+        }
+      },
+      {
+        "street": "123 Main St",
+        "city": "Anytown",
+        "country": {
+          "name": "CountryName",
+          "code": "CN"
+        }
       }
-    },
+    ],
     "contact": {
       "email": "john.doe@example.com",
       "phone": "123-456-7890"

@@ -7,8 +7,49 @@
         "index": false,
         "doc_values": false
       },
+      "date": {
+        "type": "date"
+      },
       "data": {
         "type": "object"
+      },
+      "dataPaths": {
+        "type": "nested",
+        "properties": {
+          "key": {
+            "type": "keyword"
+          },
+          "type": {
+            "type": "keyword"
+          },
+          "text": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "number": {
+            "type": "double"
+          },
+          "boolean": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "date"
+          },
+          "array_length": {
+            "type": "integer"
+          },
+          "array_key": {
+            "type": "keyword"
+          },
+          "array_index": {
+            "type": "integer"
+          }
+        }
       }
     }
   }

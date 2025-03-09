@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,7 +20,8 @@ public class ElasticseachEventService implements EventService {
 
     @Override
     public EventDto save(EventDto eventDto) {
-        eventDto.setId(UUID.randomUUID());
+        eventDto.setId(UUID.randomUUID()); // TODO: Move to common logic
+        eventDto.setDate(ZonedDateTime.now());
         ElasticsearchEvent event = eventMapper.eventDtoToEvent(eventDto);
         ElasticsearchEvent savedEvent = eventRepository.save(event);
         return eventMapper.eventToEventDto(savedEvent);
