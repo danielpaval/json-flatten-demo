@@ -1,12 +1,89 @@
-### Create index
+### Lookup1
 
-PUT {{ELASTICSEARCH_URI}}/events
+GET {{ELASTICSEARCH_URI}}/events/_search
 Content-Type: application/json
 Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
 
-< index-mapping.json
+{
+  "query": {
+    "match": {
+      "data.billingAddress.state": "CA"
+    }
+  }
+}
 
-### Delete index
+### Orders per customer email report
 
-DELETE {{ELASTICSEARCH_URI}}/events
+GET {{ELASTICSEARCH_URI}}/events/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "nested": {
+            "path": "dataPaths",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "term": {
+                      "dataPaths.key": "customer.email"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "customer_emails": {
+      "nested": {
+        "path": "dataPaths"
+      },
+      "aggs": {
+        "email_filter": {
+          "filter": {
+            "term": {
+              "dataPaths.key": "customer.email"
+            }
+          },
+          "aggs": {
+            "emails": {
+              "terms": {
+                "field": "dataPaths.text.keyword",
+                "size": 1000
+              },
+              "aggs": {
+                "order_count": {
+                  "cardinality": {
+                    "field": "_id"
+                  }
+                },
+                "order_count_filter": {
+                  "bucket_selector": {
+                    "buckets_path": {
+                      "orderCount": "order_count"
+                    },
+                    "script": "params.orderCount > 0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+### Lookup by document ID
+
+GET {{ELASTICSEARCH_URI}}/events/_doc/11112e95-1962-4748-996f-d2865e63ec01
 Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}

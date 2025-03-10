@@ -11,7 +11,8 @@
         "type": "date"
       },
       "data": {
-        "type": "object"
+        "type": "object",
+        "enabled": false
       },
       "dataPaths": {
         "type": "nested",

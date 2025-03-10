@@ -1,0 +1,17 @@
+### Create index with mapping
+
+PUT {{ELASTICSEARCH_URI}}/events
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+< index-mapping.json
+
+### Get index mapping
+
+GET {{ELASTICSEARCH_URI}}/events
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+### Delete index
+
+DELETE {{ELASTICSEARCH_URI}}/events
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}

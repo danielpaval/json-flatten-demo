@@ -1,34 +1,111 @@
+### Insert Jane Doe order
+
 POST {{DEMO_URL}}/api/events
 Content-Type: application/json
 
 {
   "data": {
-    "name": "John Doe",
-    "age": 30,
-    "addresses": [
+    "orderId": "12345",
+    "customer": {
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "phone": "987-654-3210"
+    },
+    "items": [
       {
-        "default": true,
-        "street": "123 Main St",
-        "city": "Anytown",
-        "country": {
-          "name": "CountryName",
-          "code": "CN"
-        }
+        "productId": "A1B2C3",
+        "productName": "Widget",
+        "quantity": 2,
+        "price": 19.99
       },
       {
-        "street": "123 Main St",
-        "city": "Anytown",
-        "country": {
-          "name": "CountryName",
-          "code": "CN"
-        }
+        "productId": "D4E5F6",
+        "productName": "Gadget",
+        "quantity": 1,
+        "price": 99.99
       }
     ],
-    "contact": {
+    "shippingAddress": {
+      "street": "456 Elm St",
+      "city": "Othertown",
+      "state": "CA",
+      "zip": "90210",
+      "country": {
+        "name": "United States",
+        "code": "US"
+      }
+    },
+    "billingAddress": {
+      "street": "456 Elm St",
+      "city": "Othertown",
+      "state": "CA",
+      "zip": "90210",
+      "country": {
+        "name": "United States",
+        "code": "US"
+      }
+    },
+    "orderDate": "2023-10-01T12:00:00Z",
+    "status": "Processing",
+    "totalAmount": 139.97
+  }
+}
+
+> {%
+    client.global.set("EVENT_ID", null);
+    client.global.set("EVENT_ID", response.body.id);
+%}
+
+### Insert John Doe order
+
+POST {{DEMO_URL}}/api/events
+Content-Type: application/json
+
+{
+  "data": {
+    "orderId": "67890",
+    "customer": {
+      "name": "John Doe",
       "email": "john.doe@example.com",
       "phone": "123-456-7890"
     },
-    "createdAt": "2023-10-01T12:00:00Z"
+    "items": [
+      {
+        "productId": "G7H8I9",
+        "productName": "Thingamajig",
+        "quantity": 3,
+        "price": 29.99
+      },
+      {
+        "productId": "J1K2L3",
+        "productName": "Doohickey",
+        "quantity": 2,
+        "price": 49.99
+      }
+    ],
+    "shippingAddress": {
+      "street": "123 Main St",
+      "city": "Anytown",
+      "state": "NY",
+      "zip": "12345",
+      "country": {
+        "name": "United States",
+        "code": "US"
+      }
+    },
+    "billingAddress": {
+      "street": "123 Main St",
+      "city": "Anytown",
+      "state": "NY",
+      "zip": "12345",
+      "country": {
+        "name": "United States",
+        "code": "US"
+      }
+    },
+    "orderDate": "2023-10-02T12:00:00Z",
+    "status": "Processing",
+    "totalAmount": 189.95
   }
 }
 
