@@ -11,7 +11,7 @@
     </parent>
 
 	<groupId>paval.io</groupId>
-    <artifactId>event-flatten-demo</artifactId>
+    <artifactId>json-flatten-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
