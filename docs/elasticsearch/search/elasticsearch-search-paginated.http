@@ -1,0 +1,158 @@
+### Paginated order counts per customer email report
+
+GET {{ELASTICSEARCH_URI}}/events/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "nested": {
+            "path": "dataPaths",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "term": {
+                      "dataPaths.key": "customer.email"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "customer_emails": {
+      "nested": {
+        "path": "dataPaths"
+      },
+      "aggs": {
+        "email_filter": {
+          "filter": {
+            "term": {
+              "dataPaths.key": "customer.email"
+            }
+          },
+          "aggs": {
+            "emails": {
+              "composite": {
+                "size": 1,
+                "sources": [
+                  {
+                    "email": {
+                      "terms": {
+                        "field": "dataPaths.text.keyword"
+                      }
+                    }
+                  }
+                ]
+              },
+              "aggs": {
+                "order_count": {
+                  "cardinality": {
+                    "field": "_id"
+                  }
+                },
+                "order_count_filter": {
+                  "bucket_selector": {
+                    "buckets_path": {
+                      "orderCount": "order_count"
+                    },
+                    "script": "params.orderCount > 0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+### Paginated order counts per customer email report (next page)
+
+GET {{ELASTICSEARCH_URI}}/events/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "nested": {
+            "path": "dataPaths",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "term": {
+                      "dataPaths.key": "customer.email"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "customer_emails": {
+      "nested": {
+        "path": "dataPaths"
+      },
+      "aggs": {
+        "email_filter": {
+          "filter": {
+            "term": {
+              "dataPaths.key": "customer.email"
+            }
+          },
+          "aggs": {
+            "emails": {
+              "composite": {
+                "size": 50,
+                "sources": [
+                  {
+                    "email": {
+                      "terms": {
+                        "field": "dataPaths.text.keyword"
+                      }
+                    }
+                  }
+                ],
+                "after": { "email": "jane.smith@example.com" }
+              },
+              "aggs": {
+                "order_count": {
+                  "cardinality": {
+                    "field": "_id"
+                  }
+                },
+                "order_count_filter": {
+                  "bucket_selector": {
+                    "buckets_path": {
+                      "orderCount": "order_count"
+                    },
+                    "script": "params.orderCount > 0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

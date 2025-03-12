@@ -1,0 +1,183 @@
+### Search by by customer email (match)
+
+GET {{ELASTICSEARCH_URI}}/events/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "query": {
+    "match": {
+      "customer.email": "john.doe@example.com"
+    }
+  }
+}
+
+### Search by customer email (nested)
+
+GET {{ELASTICSEARCH_URI}}/events-data-stream/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "query": {
+    "nested": {
+      "path": "paths",
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "paths.key": "customer.email"
+              }
+            },
+            {
+              "match": {
+                "paths.text": "john.doe@example.com"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+
+### Search by customer email (include in parent)
+
+GET {{ELASTICSEARCH_URI}}/events-data-stream/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "paths.key": "customer.email"
+          }
+        },
+        {
+          "match": {
+            "paths.text": "john.doe@example.com"
+          }
+        }
+      ]
+    }
+  }
+}
+
+### Orders per customer email report
+
+GET {{ELASTICSEARCH_URI}}/events-data-stream/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "nested": {
+            "path": "paths",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "term": {
+                      "paths.key": "customer.email"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "paths": {
+      "nested": {
+        "path": "paths"
+      },
+      "aggs": {
+        "email_filter": {
+          "filter": {
+            "term": {
+              "paths.key": "customer.email"
+            }
+          },
+          "aggs": {
+            "emails": {
+              "terms": {
+                "field": "paths.text.keyword",
+                "size": 1000
+              },
+              "aggs": {
+                "order_count": {
+                  "cardinality": {
+                    "field": "_id"
+                  }
+                },
+                "order_count_filter": {
+                  "bucket_selector": {
+                    "buckets_path": {
+                      "orderCount": "order_count"
+                    },
+                    "script": "params.orderCount >= 0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+### Lookup by document ID
+
+GET {{ELASTICSEARCH_URI}}/events/_doc/11112e95-1962-4748-996f-d2865e63ec01
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+### Lookup by document ID (data stream index)
+
+# GET {{ELASTICSEARCH_URI}}/events-data-stream/_doc/af695d47-0f79-4214-aac5-794704d9e90f
+GET {{ELASTICSEARCH_URI}}/.ds-events-data-stream-2025.03.13-000001/_doc/af695d47-0f79-4214-aac5-794704d9e90f
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+### Lookup by document ID (data stream)
+
+GET {{ELASTICSEARCH_URI}}/events-data-stream/_doc/af695d47-0f79-4214-aac5-794704d9e90f
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+### Lookup by document ID (data stream)
+
+GET {{ELASTICSEARCH_URI}}/events-data-stream/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "query": {
+    "ids": {
+      "values": ["af695d47-0f79-4214-aac5-794704d9e90f"]
+    }
+  }
+}
+
+### Lookup by document ID (data stream)
+
+GET {{ELASTICSEARCH_URI}}/events-data-stream/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "query": {
+    "term": {
+      "_id": "8ab603ab-c2db-4638-8c66-c7380ce7dd53"
+    }
+  }
+}

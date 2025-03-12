@@ -1,0 +1,553 @@
+### Delete index
+
+DELETE {{ELASTICSEARCH_URI}}/events-dynamic
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+
+### Insert full event (data + data paths)
+
+< {%
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    client.global.set("DOCUMENT_ID", generateUUID());
+    client.global.set("ORDER_ID", generateUUID());
+%}
+
+POST {{ELASTICSEARCH_URI}}/events/_doc/{{DOCUMENT_ID}}
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+    "id": "{{DOCUMENT_ID}}",
+    "type": "ORDER",
+    "@timestamp": "{{$isoTimestamp}}",
+    "tags": ["black-friday", "easybox"],
+    "data": {
+        "orderId": "{{ORDER_ID}}",
+        "totalPrice": 3299.95,
+        "shippingAddress": {
+            "zip": "89628",
+            "country": {
+                "code": "US",
+                "name": "United States"
+            },
+            "city": "Los Angeles",
+            "street": "987 Oak St",
+            "state": "CA"
+        },
+        "billingAddress": {
+            "zip": "23231",
+            "country": {
+                "code": "US",
+                "name": "United States"
+            },
+            "city": "New York",
+            "street": "994 Oak St",
+            "state": "NY"
+        },
+        "items": [
+            {
+                "unitPrice": 899.99,
+                "quantity": 2,
+                "productId": "PHNX",
+                "productName": "iPhone X"
+            },
+            {
+                "unitPrice": 499.99,
+                "quantity": 3,
+                "productId": "MON321",
+                "productName": "4K Monitor"
+            }
+        ],
+        "orderDate": "2025-03-13T19:50:02.763355800Z",
+        "customer": {
+            "phone": "123-456-7890",
+            "name": "John Doe",
+            "email": "john.doe@example.com"
+        },
+        "status": "DELIVERED"
+    },
+    "paths": [
+        {
+            "key": "orderId",
+            "type": "text",
+            "text": "886eb458-bf38-46c7-8c91-306b083b8f1e"
+        },
+        {
+            "key": "customer.email",
+            "type": "text",
+            "text": "john.doe@example.com"
+        },
+        {
+            "key": "totalPrice",
+            "type": "number",
+            "text": "3299.95",
+            "number": 3299.95
+        },
+        {
+            "key": "items[0].productId",
+            "type": "text",
+            "text": "PHN456"
+        },
+        {
+            "key": "items[0].productName",
+            "type": "text",
+            "text": "Smartphone Pro"
+        },
+        {
+            "key": "orderDate",
+            "type": "date",
+            "text": "{{$isoTimestamp}}",
+            "date": "{{$isoTimestamp}}"
+        }
+    ]
+}
+
+### Insert partial event (data only)
+
+< {%
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    client.global.set("DOCUMENT_ID", generateUUID());
+    client.global.set("ORDER_ID", generateUUID());
+%}
+
+POST {{ELASTICSEARCH_URI}}/events/_doc/{{DOCUMENT_ID}}
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+    "id": "{{DOCUMENT_ID}}",
+    "type": "ORDER",
+    "@timestamp": "{{$isoTimestamp}}",
+    "tags": ["black-friday", "easybox"],
+    "data": {
+        "orderId": "{{ORDER_ID}}",
+        "totalPrice": 3299.95,
+        "shippingAddress": {
+            "zip": "89628",
+            "country": {
+                "code": "US",
+                "name": "United States"
+            },
+            "city": "Los Angeles",
+            "street": "987 Oak St",
+            "state": "CA"
+        },
+        "billingAddress": {
+            "zip": "23231",
+            "country": {
+                "code": "US",
+                "name": "United States"
+            },
+            "city": "New York",
+            "street": "994 Oak St",
+            "state": "NY"
+        },
+        "items": [
+            {
+                "unitPrice": 899.99,
+                "quantity": 2,
+                "productId": "PHNX",
+                "productName": "iPhone X"
+            },
+            {
+                "unitPrice": 499.99,
+                "quantity": 3,
+                "productId": "MON321",
+                "productName": "4K Monitor"
+            }
+        ],
+        "orderDate": "2025-03-13T19:50:02.763355800Z",
+        "customer": {
+            "phone": "123-456-7890",
+            "name": "John Doe",
+            "email": "john.doe@example.com"
+        },
+        "status": "DELIVERED"
+    }
+}
+
+### Insert partial event (data paths only)
+
+< {%
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    client.global.set("DOCUMENT_ID", generateUUID());
+    client.global.set("ORDER_ID", generateUUID());
+%}
+
+PUT {{ELASTICSEARCH_URI}}/events-data-stream/_doc/{{DOCUMENT_ID}}?op_type=create
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "id":"81cb8792-aace-4f77-ba99-e0f8ebf7c3a1",
+  "type":"ORDER",
+  "@timestamp": "{{$isoTimestamp}}",
+  "data":{
+    "orderId":"c730410c-247d-40f1-bbf5-6cae161c42ef",
+    "customer":{
+      "name":"Jane Smith",
+      "email":"jane.smith@example.com",
+      "phone":"987-654-3210"
+    },
+    "items":[
+      {
+        "productId":"A1B2C3",
+        "productName":"Widget",
+        "quantity":2,
+        "unitPrice":19.99
+      },
+      {
+        "productId":"D4E5F6",
+        "productName":"Gadget",
+        "quantity":1,
+        "unitPrice":99.99
+      }
+    ],
+    "shippingAddress":{
+      "street":"456 Elm St",
+      "city":"Othertown",
+      "state":"CA",
+      "zip":"90210",
+      "country":{
+        "name":"United States",
+        "code":"US"
+      }
+    },
+    "billingAddress":{
+      "street":"456 Elm St",
+      "city":"Othertown",
+      "state":"CA",
+      "zip":"90210",
+      "country":{
+        "name":"United States",
+        "code":"US"
+      }
+    },
+    "orderDate":"2025-03-11T23:22:01.274088400Z",
+    "status":"Processing",
+    "totalPrice":139.97
+  },
+  "paths":[
+    {
+      "key":"orderId",
+      "type":"text",
+      "text":"c730410c-247d-40f1-bbf5-6cae161c42ef",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"customer.name",
+      "type":"text",
+      "text":"Jane Smith",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"customer.email",
+      "type":"text",
+      "text":"jane.smith@example.com",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"customer.phone",
+      "type":"text",
+      "text":"987-654-3210",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"items[0].productId",
+      "type":"text",
+      "text":"A1B2C3",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"items[0].productName",
+      "type":"text",
+      "text":"Widget",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"items[0].quantity",
+      "type":"number",
+      "text":"2",
+      "number":2,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"items[0].unitPrice",
+      "type":"number",
+      "text":"19.99",
+      "number":19.99,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"items[1].productId",
+      "type":"text",
+      "text":"D4E5F6",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"items[1].productName",
+      "type":"text",
+      "text":"Gadget",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"items[1].quantity",
+      "type":"number",
+      "text":"1",
+      "number":1,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"items[1].unitPrice",
+      "type":"number",
+      "text":"99.99",
+      "number":99.99,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"shippingAddress.street",
+      "type":"text",
+      "text":"456 Elm St",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"shippingAddress.city",
+      "type":"text",
+      "text":"Othertown",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"shippingAddress.state",
+      "type":"text",
+      "text":"CA",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"shippingAddress.zip",
+      "type":"text",
+      "text":"90210",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"shippingAddress.country.name",
+      "type":"text",
+      "text":"United States",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"shippingAddress.country.code",
+      "type":"text",
+      "text":"US",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"billingAddress.street",
+      "type":"text",
+      "text":"456 Elm St",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"billingAddress.city",
+      "type":"text",
+      "text":"Othertown",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"billingAddress.state",
+      "type":"text",
+      "text":"CA",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"billingAddress.zip",
+      "type":"text",
+      "text":"90210",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"billingAddress.country.name",
+      "type":"text",
+      "text":"United States",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"billingAddress.country.code",
+      "type":"text",
+      "text":"US",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"orderDate",
+      "type":"date",
+      "text":"2025-03-11T23:22:01.274088400Z",
+      "number":null,
+      "date":"2025-03-11T23:22:01.2740884Z",
+      "boolean":null
+    },
+    {
+      "key":"status",
+      "type":"text",
+      "text":"Processing",
+      "number":null,
+      "date":null,
+      "boolean":null
+    },
+    {
+      "key":"totalPrice",
+      "type":"number",
+      "text":"139.97",
+      "number":139.97,
+      "date":null,
+      "boolean":null
+    }
+  ]
+}
+
+### Insert partial event (data paths only) to data stream
+
+< {%
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    client.global.set("DOCUMENT_ID", generateUUID());
+    client.global.set("ORDER_ID", generateUUID());
+%}
+
+POST {{ELASTICSEARCH_URI}}/events-data-stream/_doc/{{DOCUMENT_ID}}?op_type=create
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+    "id": "{{DOCUMENT_ID}}",
+    "type": "ORDER",
+    "@timestamp": "{{$isoTimestamp}}",
+    "tags": ["black-friday", "easybox"],
+    "paths": [
+        {
+            "key": "orderId",
+            "type": "text",
+            "text": "886eb458-bf38-46c7-8c91-306b083b8f1e"
+        },
+        {
+            "key": "customer.email",
+            "type": "text",
+            "text": "john.doe@example.com"
+        },
+        {
+            "key": "totalPrice",
+            "type": "number",
+            "text": "3299.95",
+            "number": 3299.95
+        },
+        {
+            "key": "items[0].productId",
+            "type": "text",
+            "text": "PHN456"
+        },
+        {
+            "key": "items[0].productName",
+            "type": "text",
+            "text": "Smartphone Pro"
+        },
+        {
+            "key": "orderDate",
+            "type": "date",
+            "text": "{{$isoTimestamp}}",
+            "date": "{{$isoTimestamp}}"
+        }
+    ]
+}
+
+### Lookup by tag
+
+GET {{ELASTICSEARCH_URI}}/events/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "query": {
+    "match": {
+      "tags": "black-friday"
+    }
+  }
+}
+
+### Lookup by product name
+
+GET {{ELASTICSEARCH_URI}}/dynamic-events/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "query": {
+    "match": {
+      "data.items.productName": "iPhone X"
+    }
+  }
+}

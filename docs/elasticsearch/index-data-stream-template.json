@@ -1,0 +1,63 @@
+{
+  "index_patterns": [
+    "events-data-stream*"
+  ],
+  "template": {
+    "mappings": {
+      "dynamic": "false",
+      "properties": {
+        "_class": {
+          "type": "keyword",
+          "index": false,
+          "doc_values": false
+        },
+        "@timestamp": {
+          "type": "date"
+        },
+        "data": {
+          "type": "object"
+        },
+        "paths": {
+          "type": "nested",
+          "include_in_parent": true,
+          "properties": {
+            "key": {
+              "type": "keyword"
+            },
+            "type": {
+              "type": "keyword"
+            },
+            "text": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "number": {
+              "type": "double"
+            },
+            "boolean": {
+              "type": "boolean"
+            },
+            "date": {
+              "type": "date"
+            },
+            "array_length": {
+              "type": "integer"
+            },
+            "array_key": {
+              "type": "keyword"
+            },
+            "array_index": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    }
+  },
+  "data_stream": {}
+}

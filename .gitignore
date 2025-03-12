@@ -129,3 +129,6 @@ buildNumber.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,visualstudiocode,maven
 
+docs/elasticsearch/docker-compose/json/*.json
+events-*.json
+

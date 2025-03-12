@@ -12,3 +12,8 @@ spring:
         enabled: false
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+    
+application:
+  elasticsearch:
+    index: ${ELASTICSEARCH_INDEX:events-data-stream}
+  flush: true

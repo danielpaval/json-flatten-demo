@@ -1,2 +1,0 @@
-orderId,customer_name,customer_email,customer_phone,productId,productName,quantity,price,street,city,state,zip,country,orderDate,status,totalAmount
-cf228070-5fa0-4143-92be-7159cfc11689,Jimmy Whitehead,ricardo86@example.net,9732301590,624b46c9-7913-42b0-98a3-8a14632498b2,work,10,93.84,993 Eddie Manor,South Christina,GU,98492,United States,2025-02-19T23:44:49,Processing,116.77

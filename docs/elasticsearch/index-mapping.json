@@ -7,15 +7,15 @@
         "index": false,
         "doc_values": false
       },
-      "date": {
+      "@timestamp": {
         "type": "date"
       },
       "data": {
-        "type": "object",
-        "enabled": false
+        "type": "object"
       },
-      "dataPaths": {
+      "paths": {
         "type": "nested",
+        "include_in_parent": true,
         "properties": {
           "key": {
             "type": "keyword"

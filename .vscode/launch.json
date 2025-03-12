@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-JsonFlattenDemoApplication<json-flatten-demo> - ES",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "io.paval.demo.JsonFlattenDemoApplication",
+            "projectName": "json-flatten-demo (elasticsearch)",
+            "args": "--spring.profiles.active=elasticsearch",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "ELASTICSEARCH_PASSWORD": "changeme"
+            }
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-JsonFlattenDemoApplication<json-flatten-demo> - Oracle",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "io.paval.demo.JsonFlattenDemoApplication",
+            "projectName": "json-flatten-demo (elasticsearch)",
+            "args": "--spring.profiles.active=jpa",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "DATASOURCE_PASSWORD": "cetate"
+            }
+        }
+    ]
+}

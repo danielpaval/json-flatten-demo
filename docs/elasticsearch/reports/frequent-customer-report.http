@@ -1,0 +1,32 @@
+GET {{ELASTICSEARCH_URI}}/events-data-stream/_search
+Content-Type: application/json
+Authorization: Basic {{ELASTICSEARCH_AUTHORIZATION}}
+
+{
+  "size": 0,
+  "aggs": {
+    "paths": {
+      "nested": {
+        "path": "paths"
+      },
+      "aggs": {
+        "customer_email_path": {
+          "filter": {
+            "term": {
+              "paths.key": "customer.email"
+            }
+          },
+          "aggs": {
+            "email": {
+              "terms": {
+                "field": "paths.text.keyword",
+                "size": 10,
+                "min_doc_count": 3
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
