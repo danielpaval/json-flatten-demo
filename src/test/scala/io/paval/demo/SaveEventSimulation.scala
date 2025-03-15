@@ -5,21 +5,20 @@ import io.gatling.core.structure.ScenarioBuilder
 
 class SaveEventSimulation extends AbstractEventSimulation {
 
-  val scenarioBuilder: ScenarioBuilder = scenario("Save Scenario")
+  val saveScenarioBuilder: ScenarioBuilder = scenario("Save Scenario")
     .exec(saveRequest)
 
-  val flushScenarioBuilder: ScenarioBuilder = scenario("Save & Flush Scenario")
+  val saveAndFlushScenarioBuilder: ScenarioBuilder = scenario("Save + Flush Scenario")
     .exec(saveAndFlushRequest)
 
   setUp(
-    scenarioBuilder.inject(
-      rampUsers(10).during(10),
-      constantUsersPerSec(10).during(10).randomized
-    ).andThen(
-      flushScenarioBuilder.inject(
-        rampUsers(10).during(10),
-        constantUsersPerSec(10).during(10).randomized
-      )
+    /*saveScenarioBuilder.inject(
+      //rampUsers(100).during(10),
+      constantUsersPerSec(20).during(60)
+    )*/
+    saveAndFlushScenarioBuilder.inject(
+      //rampUsers(100).during(10),
+      constantUsersPerSec(20).during(60)
     )
   )
     .protocols(httpProtocolBuilder)

@@ -34,8 +34,15 @@ class AbstractEventSimulation extends Simulation {
   val saveAndFlushRequest: ChainBuilder = exec(createSaveRequest(true))
 
   val findRequest: ChainBuilder = exec(
-    http("Get Event")
+    http("Find Event")
       .get("/api/events/#{eventId}")
+      .check(status.is(200))
+  )
+
+  val reportRequest: ChainBuilder = exec(
+    http("Get Frequent Customer Report")
+      .post("/api/reports")
+      .queryParam("type", "FREQUENT_CUSTOMER_REPORT")
       .check(status.is(200))
   )
 

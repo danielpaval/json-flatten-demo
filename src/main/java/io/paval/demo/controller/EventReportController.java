@@ -22,8 +22,8 @@ public class EventReportController {
     private final EventService eventService;
     
     @PostMapping
-    public ResponseEntity<ReportDto> execute(@RequestParam EventReportType type, @RequestBody Map<String, Object> parameters) {
-        return new ResponseEntity<>(eventService.execute(type, parameters), HttpStatus.CREATED);
+    public ResponseEntity<ReportDto> execute(@RequestParam EventReportType type, @RequestBody(required = false) Map<String, Object> parameters) {
+        return new ResponseEntity<>(eventService.execute(type, parameters), HttpStatus.OK);
     }
 
 }
