@@ -25,7 +25,7 @@ class AbstractEventSimulation extends Simulation {
     http(if (flush) "Save & Flush Event" else "Save Event")
       .post("/api/events")
       .queryParam("flush", flush)
-      .body(StringBody(objectMapper.writeValueAsString(EventGenerator.generate()))).asJson
+      .body(StringBody(objectMapper.writeValueAsString(EventGenerator.generateOrder()))).asJson
       .check(status.is(201))
       .check(header("X-Event-Id").saveAs("eventId"))
   )

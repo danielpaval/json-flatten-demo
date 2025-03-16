@@ -2,10 +2,10 @@ package io.paval.demo.service;
 
 import java.util.Map;
 
-public interface EventReport {
+public interface Report {
     
     Map<String, Object> execute(Map<String, Object> parameters);
     
-    EventReportType getType();
+    ReportType getType();
     
 }

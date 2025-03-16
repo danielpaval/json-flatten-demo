@@ -1,6 +1,6 @@
 package io.paval.demo.service;
 
-public enum EventReportType {
+public enum ReportType {
 
     FREQUENT_CUSTOMER_REPORT
     

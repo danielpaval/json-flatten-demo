@@ -5,32 +5,23 @@ import io.paval.demo.impl.elasticsearch.ElasticsearchEvent;
 import io.paval.demo.impl.elasticsearch.ElasticsearchEventMapper;
 import io.paval.demo.impl.elasticsearch.ElasticsearchEventRepository;
 import io.paval.demo.service.AbstractEventService;
-import io.paval.demo.service.EventReport;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Profile("elasticsearch")
 @Service
+@RequiredArgsConstructor
 public class ElasticseachDataStreamEventService extends AbstractEventService {
 
     private final ElasticsearchEventRepository eventRepository;
     
     private final ElasticsearchEventMapper eventMapper;
-
-    public ElasticseachDataStreamEventService(
-            ElasticsearchEventRepository eventRepository,
-            ElasticsearchEventMapper eventMapper,
-            List<EventReport> reports) {
-        super(reports);
-        this.eventRepository = eventRepository;
-        this.eventMapper = eventMapper;
-    }
 
     @Override
     public UUID save(EventDto eventDto, boolean flush) {

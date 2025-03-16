@@ -63,28 +63,43 @@ public class EventGenerator {
     private static final Integer BATCH_SIZE = 100000;
 
     public static void main(String[] args) {
-        generate(1);
+        //generate(1);
+        generate(1, EventType.REGISTRATION);
     }
 
     public void generate(Integer count) {
-        generate(count, Format.ELASTICSEARCH);
+        generate(count, EventType.ORDER);
     }
 
-    public static void generate(Integer count, Format format) {
+    public void generate(Integer count, EventType type) {
+        generate(count, type, Format.ELASTICSEARCH);
+    }
+
+    public static void generate(Integer count, EventType type, Format format) {
         LocalDateTime start = LocalDateTime.now();
         int processors = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(processors);
         log.info("Batch 0");
         for (int i = 0; i < count % BATCH_SIZE; i++) {
             executor.submit(() -> {
-                generate(Path.of("events-%d-%d.json".formatted(count >= BATCH_SIZE ? BATCH_SIZE : count, 0)), format, 1);
+                generate(
+                        1,
+                        type,
+                        format,
+                        Path.of("events-%s-%d-%d.json".formatted(type, count >= BATCH_SIZE ? BATCH_SIZE : count, 0))
+                );
             });
         }
         for (int i = 0; i < count / BATCH_SIZE; i++) {
             int batch = i + 1;
             executor.submit(() -> {
                 log.info("Batch {}", batch);
-                generate(Path.of("events-%d-%d.json".formatted(count >= BATCH_SIZE ? BATCH_SIZE : count, batch)), format, BATCH_SIZE);
+                generate(
+                        BATCH_SIZE,
+                        type,
+                        format,
+                        Path.of("events-%s-%d-%d.json".formatted(type, count >= BATCH_SIZE ? BATCH_SIZE : count, batch))
+                );
             });
         }
         executor.shutdown();
@@ -96,14 +111,19 @@ public class EventGenerator {
         }
     }
 
-    public void generate(Path path, Format format, Integer count) {
+    public void generate(Integer count, EventType type, Format format, Path path) {
         try (BufferedWriter writer = Files.newBufferedWriter(
                 path,
                 StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND)) {
             for (int i = 0; i < count; i++) {
                 if (Format.ELASTICSEARCH.equals(format)) {
-                    EventDto eventDto = generate();
+                    EventDto eventDto;
+                    if (EventType.ORDER.equals(type)) {
+                        eventDto = generateOrder();
+                    } else {
+                        eventDto = generateRegistration();
+                    }
                     ElasticsearchEvent elasticsearchEvent = ELASTICSEARCH_EVENT_MAPPER.eventDtoToEvent(eventDto);
                     writer.write(OBJECT_MAPPER.writeValueAsString(elasticsearchEvent));
                     writer.newLine();
@@ -115,7 +135,20 @@ public class EventGenerator {
         }
     }
 
-    public static EventDto generate() {
+    public static EventDto generateRegistration() {
+        EventDto eventDto = new EventDto();
+        eventDto.setType(EventType.REGISTRATION);
+        eventDto.setId(UUID.randomUUID());
+        eventDto.setDate(ZonedDateTime.now(ZoneOffset.UTC));
+        Map<String, Object> data = new HashMap<>(generateCustomer());
+        List<Object> addresses = new ArrayList<>();
+        addresses.add(generateAddress());
+        data.put("addresses", addresses);
+        eventDto.setData(data);
+        return eventDto;
+    }
+
+    public static EventDto generateOrder() {
         EventDto eventDto = new EventDto();
         eventDto.setType(EventType.ORDER);
         eventDto.setId(UUID.randomUUID());
@@ -124,10 +157,10 @@ public class EventGenerator {
         data.put("orderId", UUID.randomUUID());
         Map<String, Object> customer = generateCustomer();
         data.put("customer", customer);
-        List<Map<String, Object>> items = generateItems();
+        List<Map<String, Object>> items = generateOrderItems();
         data.put("items", items);
-        data.put("shippingAddress", createAddress());
-        data.put("billingAddress", createAddress());
+        data.put("shippingAddress", generateAddress());
+        data.put("billingAddress", generateAddress());
         data.put("orderDate", ZonedDateTime.now(ZoneOffset.UTC).toString());
         data.put("status", STATUSES.get(random.nextInt(STATUSES.size())));
         data.put("totalPrice", getItemsTotal(items));
@@ -143,8 +176,8 @@ public class EventGenerator {
         customerMap.put("phone", "123-456-7890");
         return customerMap;
     }
-    
-    private static List<Map<String, Object>> generateItems() {
+
+    private static List<Map<String, Object>> generateOrderItems() {
         List<Map<String, Object>> items = new ArrayList<>();
         int itemCount = random.nextInt(1, 5);
         for (int i = 0; i < itemCount; i++) {
@@ -159,7 +192,7 @@ public class EventGenerator {
         return items;
     }
 
-    private Map<String, Object> createAddress() {
+    private Map<String, Object> generateAddress() {
         int index = random.nextInt(CITIES.size());
         Map<String, Object> addressMap = new HashMap<>();
         addressMap.put("street", random.nextInt(1, 999) + " " +
@@ -182,9 +215,11 @@ public class EventGenerator {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    record Item(String id, String name, double price) {}
+    record Item(String id, String name, double price) {
+    }
 
-    record Customer(String email, String name) {}
+    record Customer(String email, String name) {
+    }
 
     enum Format {
 

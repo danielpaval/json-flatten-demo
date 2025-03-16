@@ -1,6 +1,6 @@
 package io.paval.demo.dto;
 
-import io.paval.demo.service.EventReportType;
+import io.paval.demo.service.ReportType;
 import lombok.Data;
 
 import java.util.Map;
@@ -8,7 +8,7 @@ import java.util.Map;
 @Data
 public class ReportDto {
     
-    private EventReportType type;
+    private ReportType type;
     
     private Map<String, Object> data;
     

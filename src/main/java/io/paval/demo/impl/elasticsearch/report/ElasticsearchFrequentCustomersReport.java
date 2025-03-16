@@ -3,8 +3,8 @@ package io.paval.demo.impl.elasticsearch.report;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import io.paval.demo.service.EventReport;
-import io.paval.demo.service.EventReportType;
+import io.paval.demo.service.Report;
+import io.paval.demo.service.ReportType;
 import io.paval.demo.impl.elasticsearch.ElasticsearchEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -20,7 +20,7 @@ import java.util.Map;
 @Profile("elasticsearch")
 @Service
 @RequiredArgsConstructor
-public class ElasticsearchFrequentCustomersReport implements EventReport {
+public class ElasticsearchFrequentCustomersReport implements Report {
 
     private final ElasticsearchClient elasticsearchClient;
     
@@ -70,8 +70,8 @@ public class ElasticsearchFrequentCustomersReport implements EventReport {
     }
 
     @Override
-    public EventReportType getType() {
-        return EventReportType.FREQUENT_CUSTOMER_REPORT;
+    public ReportType getType() {
+        return ReportType.FREQUENT_CUSTOMER_REPORT;
     }
 
 }

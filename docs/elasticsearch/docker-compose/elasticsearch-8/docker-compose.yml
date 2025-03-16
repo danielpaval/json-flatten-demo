@@ -1,0 +1,46 @@
+version: '3.7'
+
+name: elasticsearch_8
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    container_name: elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ES_JAVA_OPTS=-Xms512m -Xmx4096m
+      #- path.repo=/usr/share/elasticsearch/snapshots
+    ports:
+      - ${ES_PORT}:9200
+    volumes:
+      - es_data_8:/usr/share/elasticsearch/data
+      #- C:\Data\elasticsearch\snapshots:/usr/share/elasticsearch/snapshots
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -u elastic:${ELASTIC_PASSWORD} http://localhost:9200",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+  kibana:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    container_name: kibana
+    restart: unless-stopped
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
+    ports:
+      - ${KIBANA_PORT}:5601
+
+volumes:
+  es_data_8:
+    driver: local

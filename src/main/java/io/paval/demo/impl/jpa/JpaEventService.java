@@ -2,30 +2,21 @@ package io.paval.demo.impl.jpa;
 
 import io.paval.demo.dto.EventDto;
 import io.paval.demo.service.AbstractEventService;
-import io.paval.demo.service.EventReport;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Profile("jpa")
 @Service
+@RequiredArgsConstructor
 public class JpaEventService extends AbstractEventService {
 
     private final JpaEventRepository eventRepository;
     
     private final JpaEventMapper eventMapper;
-
-    public JpaEventService(
-            JpaEventRepository eventRepository,
-            JpaEventMapper eventMapper,
-            List<EventReport> reports) {
-        super(reports);
-        this.eventRepository = eventRepository;
-        this.eventMapper = eventMapper;
-    }
     
     @Override
     public UUID save(EventDto eventDto, boolean flush) {

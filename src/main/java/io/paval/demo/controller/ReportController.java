@@ -1,8 +1,8 @@
 package io.paval.demo.controller;
 
-import io.paval.demo.service.EventReportType;
-import io.paval.demo.service.EventService;
 import io.paval.demo.dto.ReportDto;
+import io.paval.demo.service.ReportService;
+import io.paval.demo.service.ReportType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +17,13 @@ import java.util.Map;
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
 @Tag(name = "Event Reports API")
-public class EventReportController {
+public class ReportController {
 
-    private final EventService eventService;
+    private final ReportService reportService;
     
     @PostMapping
-    public ResponseEntity<ReportDto> execute(@RequestParam EventReportType type, @RequestBody(required = false) Map<String, Object> parameters) {
-        return new ResponseEntity<>(eventService.execute(type, parameters), HttpStatus.OK);
+    public ResponseEntity<ReportDto> execute(@RequestParam ReportType type, @RequestBody(required = false) Map<String, Object> parameters) {
+        return new ResponseEntity<>(reportService.execute(type, parameters), HttpStatus.OK);
     }
 
 }
